@@ -8,17 +8,15 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 
 @Entity
-@Table(name = "songs")
-public class Song {
+@Table(name = "genres")
+public class Genre {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @NotBlank
-    private String title;
-
-    private String cover;
+    private String name;
 
     public Integer getId() {
         return id;
@@ -28,19 +26,11 @@ public class Song {
         this.id = id;
     }
 
-    public String getCover() {
-        return cover;
+    public String getName() {
+        return name;
     }
 
-    public void setCover(String cover) {
-        this.cover = cover;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
+    public void setName(String name) {
+        this.name = name;
     }
 }
