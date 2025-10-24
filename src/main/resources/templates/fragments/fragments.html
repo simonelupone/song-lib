@@ -1,0 +1,38 @@
+
+<th:block th:fragment="style">
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .site-max {
+      max-width: 1100px;
+    }
+  </style>
+</th:block>
+
+<th:block th:fragment="header">
+  <header class="shadow-sm">
+    <div class="mx-auto site-max px-4 py-4 flex items-center justify-between">
+      <a class="text-lg font-semibold">Song-lib</a>
+      <nav class="hidden md:flex gap-6">
+        <a
+          th:href="@{/}"
+          class="hover:text-gray-900 dark:hover:text-gray-400"
+          >Home</a
+        >
+        <a
+          th:href="@{/songs}"
+          class="hover:text-gray-900 dark:hover:text-gray-400"
+          >Songs</a
+        >
+      </nav>
+    </div>
+  </header>
+</th:block>
+
+<th:block th:fragment="footer">
+  <footer class="mt-12 border-t">
+    <div class="mx-auto site-max px-4 py-6 text-sm text-center">
+      © <span th:text="${#dates.year(#dates.createNow())}"></span> Song-lib — Built with Thymeleaf & Tailwind & &hearts;
+    </div>
+  </footer>
+</th:block>
