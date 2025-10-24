@@ -16,8 +16,35 @@
         </h1>
       </div>
 
-      <div class="pt-10 text-justify text-4xl">
-        ...lista canzoni...
+      <div>
+        <table th:if="${songs.size() > 0}">
+          <thead>
+            <tr class="border-b border-gray-300 dark:border-gray-700">
+              <th class="text-left py-2 px-4">Title</th>
+              <th class="text-left py-2 px-4">Cover</th>
+              <!-- <th class="text-left py-2 px-4">Album</th>
+              <th class="text-left py-2 px-4">Duration</th> -->
+              <th></th>
+              <th></th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              th:each="song : ${songs}"
+              th:object="${song}"
+              class="border-b border-gray-200 dark:border-gray-800 hover:bg-gray-100 dark:hover:bg-gray-800"
+            >
+              <td class="py-2 px-4" th:text="*{title}">Song Title</td>
+              <td class="py-2 px-4" th:text="*{cover}">Cover</td>
+              <!-- <td class="py-2 px-4" th:text="${song.album}">Album Name</td>
+              <td class="py-2 px-4" th:text="${song.duration}">3:45</td> -->
+            </tr>
+          </tbody>
+          </thead>
+        </table>
+
+        <p th:unless="${songs.size() > 0}">No songs found...</p>
       </div>
     </main>
 
