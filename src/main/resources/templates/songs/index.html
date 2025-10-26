@@ -16,14 +16,23 @@
         </h1>
       </div>
 
-      <div>
+      <div class="flex justify-between items-center mb-6">
+        <form th:action="@{/songs}" method="get">
+          <input th:value="${searchQuery}" name="title" class="my-10 me-2" type="text" placeholder="Search songs..." />
+          <button id="search-button" type="submit">Search</button>
+        </form>
+        <a
+          th:href="@{/songs/create}"
+          class="p-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        >Create Song</a>
+      </div>
+
+      <div class="w-full flex flex-col gap-4">
         <table th:if="${songs.size() > 0}">
           <thead>
             <tr class="border-b border-gray-300 dark:border-gray-700">
               <th class="text-left py-2 px-4">Title</th>
               <th class="text-left py-2 px-4">Cover</th>
-              <!-- <th class="text-left py-2 px-4">Album</th>
-              <th class="text-left py-2 px-4">Duration</th> -->
               <th></th>
               <th></th>
               <th></th>
@@ -37,11 +46,14 @@
             >
               <td class="py-2 px-4" th:text="*{title}">Song Title</td>
               <td class="py-2 px-4" th:text="*{cover}">Cover</td>
-              <!-- <td class="py-2 px-4" th:text="${song.album}">Album Name</td>
-              <td class="py-2 px-4" th:text="${song.duration}">3:45</td> -->
+              <td>
+                <a th:href="@{/songs/{id}(id=${song.id})}" class="font-bold hover:text-indigo-500">Show</a>
+              </td>
+              <td>
+                <a th:href="@{/songs/edit/{id}(id=${song.id})}" class="font-bold hover:text-indigo-500">Edit</a>
+              </td>
             </tr>
           </tbody>
-          </thead>
         </table>
 
         <p th:unless="${songs.size() > 0}">No songs found...</p>
