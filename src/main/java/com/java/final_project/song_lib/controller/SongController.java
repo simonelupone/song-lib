@@ -23,15 +23,15 @@ import jakarta.validation.Valid;
 public class SongController {
 
     @Autowired
-    private SongRepository repository;
+    private SongRepository songRepository;
 
     @GetMapping
     public String index(@RequestParam(name = "title", required = false) String title, Model model) {
         List<Song> songs;
         if (title != null) {
-            songs = repository.findByTitleContainingIgnoreCase(title.trim());
+            songs = songRepository.findByTitleContainingIgnoreCase(title.trim());
         } else {
-            songs = repository.findAll();
+            songs = songRepository.findAll();
         }
         model.addAttribute("songs", songs);
         model.addAttribute("searchQuery", title);
@@ -40,7 +40,7 @@ public class SongController {
 
     @GetMapping("/{id}")
     public String show(@PathVariable Integer id, Model model) {
-        Song song = repository.findById(id).get();
+        Song song = songRepository.findById(id).get();
         model.addAttribute("song", song);
         return "songs/show";
     }
@@ -57,14 +57,14 @@ public class SongController {
             return "songs/create";
         }
 
-        repository.save(song);
+        songRepository.save(song);
 
         return "redirect:/songs";
     }
 
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable Integer id, Model model) {
-        model.addAttribute("song", repository.findById(id).get());
+        model.addAttribute("song", songRepository.findById(id).get());
         return "songs/edit";
     }
 
@@ -75,14 +75,14 @@ public class SongController {
             return "songs/edit";
         }
 
-        repository.save(song);
+        songRepository.save(song);
 
         return "redirect:/songs";
     }
 
     @PostMapping("/delete/{id}")
     public String delete(@PathVariable Integer id) {
-        repository.deleteById(id);
+        songRepository.deleteById(id);
         return "redirect:/songs";
     }
 }

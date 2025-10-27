@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.java.final_project.song_lib.model.Genre;
+import com.java.final_project.song_lib.model.Song;
 import com.java.final_project.song_lib.repository.GenreRepository;
+import com.java.final_project.song_lib.repository.SongRepository;
 
 import jakarta.validation.Valid;
 
@@ -23,15 +25,18 @@ import jakarta.validation.Valid;
 public class GenreController {
 
     @Autowired
-    private GenreRepository repository;
+    private GenreRepository genreRepository;
+
+    @Autowired
+    private SongRepository songRepository;
 
     @GetMapping
     public String index(@RequestParam(name = "name", required = false) String name, Model model) {
         List<Genre> genres;
         if (name != null) {
-            genres = repository.findByNameContainingIgnoreCase(name.trim());
+            genres = genreRepository.findByNameContainingIgnoreCase(name.trim());
         } else {
-            genres = repository.findAll();
+            genres = genreRepository.findAll();
         }
         model.addAttribute("genres", genres);
         model.addAttribute("searchQuery", name);
@@ -40,7 +45,7 @@ public class GenreController {
 
     @GetMapping("/{id}")
     public String show(@PathVariable Integer id, Model model) {
-        Genre genre = repository.findById(id).get();
+        Genre genre = genreRepository.findById(id).get();
         model.addAttribute("genre", genre);
         return "genres/show";
     }
@@ -57,14 +62,14 @@ public class GenreController {
             return "genres/create";
         }
 
-        repository.save(genre);
+        genreRepository.save(genre);
 
         return "redirect:/genres";
     }
 
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable Integer id, Model model) {
-        model.addAttribute("genre", repository.findById(id).get());
+        model.addAttribute("genre", genreRepository.findById(id).get());
         return "genres/edit";
     }
 
@@ -75,14 +80,21 @@ public class GenreController {
             return "genres/edit";
         }
 
-        repository.save(genre);
+        genreRepository.save(genre);
 
         return "redirect:/genres";
     }
 
     @PostMapping("/delete/{id}")
     public String delete(@PathVariable Integer id) {
-        repository.deleteById(id);
+
+        Genre genre = genreRepository.findById(id).get();
+
+        for (Song song : genre.getSongs()) {
+            songRepository.delete(song);
+        }
+
+        genreRepository.deleteById(id);
         return "redirect:/genres";
     }
 }

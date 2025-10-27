@@ -71,7 +71,7 @@
       deleteForms.forEach(form => {
         form.addEventListener('submit', (e) => {
           const name = form.dataset.name;
-          const message = `Are you sure you want to delete ---> ${name}?\n\nThis action cannot be undone.`;
+          const message = `Are you sure you want to delete ---> ${name} <--- and all its related songs?\n\nThis action cannot be undone.`;
           if (!confirm(message)) {
             e.preventDefault();
           }

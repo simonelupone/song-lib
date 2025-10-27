@@ -25,6 +25,16 @@
         </div>
 
         <div class="my-4">
+          <label for="genre" class="block text-sm font-medium">Genre</label>
+          <input th:field="*{genre}" th:errorclass="border-red-500" type="text" id="genre" name="genre" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-black" required />
+          <div th:if="${#fields.hasErrors('genre')}" class="mt-1 text-sm text-red-600">
+            <ul>
+                <li th:each="error : ${#fields.errors('genre')}" th:text="${error}"></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="my-4">
           <label for="cover" class="block text-sm font-medium">Cover Image URL</label>
           <input th:field="*{cover}" th:errorclass="border-red-500" type="text" id="cover" name="cover" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-black" required />
           <div th:if="${#fields.hasErrors('cover')}" class="mt-1 text-sm text-red-600">
