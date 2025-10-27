@@ -1,8 +1,11 @@
 package com.java.final_project.song_lib.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,24 +32,39 @@ public class SongRestController {
     }
 
     @GetMapping("/{id}")
-    public Song show(@PathVariable Integer id) {
-        Song song = songService.getByID(id);
-        return song;
+    public ResponseEntity<Song> show(@PathVariable Integer id) {
+        Optional<Song> song = songService.findById(id);
+
+        if (song.isEmpty()) {
+            return new ResponseEntity<Song>(HttpStatusCode.valueOf(404));
+        }
+
+        return new ResponseEntity<Song>(song.get(), HttpStatusCode.valueOf(200));
     }
 
     @PostMapping("/create")
-    public Song store(@RequestBody Song song) {
-        return songService.create(song);
+    public ResponseEntity<Song> store(@RequestBody Song song) {
+        return new ResponseEntity<Song>(songService.create(song), HttpStatusCode.valueOf(201));
     }
 
     @PutMapping("/{id}")
-    public Song update(@RequestBody Song song, @PathVariable Integer id) {
+    public ResponseEntity<Song> edit(@RequestBody Song song, @PathVariable Integer id) {
+
+        if (songService.findById(id).isEmpty()) {
+            return new ResponseEntity<Song>(HttpStatusCode.valueOf(404));
+        }
+
         song.setId(id);
-        return songService.update(song);
+        return new ResponseEntity<Song>(songService.update(song), HttpStatusCode.valueOf(200));
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Integer id) {
+    public ResponseEntity<Song> delete(@PathVariable Integer id) {
+
+        if (songService.findById(id).isEmpty()) {
+            return new ResponseEntity<Song>(HttpStatusCode.valueOf(404));
+        }
         songService.deleteById(id);
+        return new ResponseEntity<Song>(HttpStatusCode.valueOf(204));
     }
 }

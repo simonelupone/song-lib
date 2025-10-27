@@ -24,6 +24,10 @@ public class SongService {
         return songRepository.findAll(Sort.by("title"));
     }
 
+    public Optional<Song> findById(Integer id) {
+        return songRepository.findById(id);
+    }
+
     public Song getByID(Integer id) {
         Optional<Song> song = songRepository.findById(id);
 
