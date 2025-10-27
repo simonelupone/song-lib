@@ -3,6 +3,7 @@ package com.java.final_project.song_lib.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -34,7 +35,8 @@ public class SongController {
     private GenreService genreService;
 
     @GetMapping
-    public String index(@RequestParam(name = "title", required = false) String title, Model model) {
+    public String index(@RequestParam(name = "title", required = false) String title, Model model,
+            Authentication authentication) {
         List<Song> songs;
         if (title != null) {
             songs = songService.findByTitle(title);
@@ -43,6 +45,7 @@ public class SongController {
         }
         model.addAttribute("songs", songs);
         model.addAttribute("searchQuery", title);
+        model.addAttribute("username", authentication.getName());
         return "songs/index";
     }
 

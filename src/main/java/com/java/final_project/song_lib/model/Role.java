@@ -1,33 +1,32 @@
 package com.java.final_project.song_lib.model;
 
-import java.util.List;
+import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 
 @Entity
-@Table(name = "authors")
-public class Author {
+@Table(name = "roles")
+public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotBlank
-    @Size(min = 3, max = 100, message = "Name must be between 3 and 100 characters")
+    @NotBlank(message = "Name is required. It cannot be empty, null, or blank.")
     private String name;
 
-    @JsonIgnore // con questo sistemo il lopp della serializzazione JSON che dava errore
-    @ManyToMany(mappedBy = "authors")
-    private List<Song> songs;
+    @ManyToMany(mappedBy = "roles", fetch = FetchType.EAGER)
+    @JsonBackReference
+    private Set<User> users;
 
     public Integer getId() {
         return id;
@@ -45,16 +44,11 @@ public class Author {
         this.name = name;
     }
 
-    public List<Song> getSongs() {
-        return songs;
+    public Set<User> getUsers() {
+        return users;
     }
 
-    public void setSongs(List<Song> songs) {
-        this.songs = songs;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("%s", name);
+    public void setUsers(Set<User> users) {
+        this.users = users;
     }
 }
