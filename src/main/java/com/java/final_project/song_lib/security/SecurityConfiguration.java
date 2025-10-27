@@ -20,8 +20,16 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/songs/create", "/songs/edit/**").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/songs/**").hasAuthority("ADMIN")
-                        .requestMatchers("/authors", "/authors/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/songs/**").hasAuthority("ADMIN")
                         .requestMatchers("/songs", "/songs/**").hasAnyAuthority("USER", "ADMIN")
+                        .requestMatchers("/authors/create", "/authors/edit/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/authors/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/authors/**").hasAuthority("ADMIN")
+                        .requestMatchers("/authors", "/authors/**").hasAnyAuthority("USER", "ADMIN")
+                        .requestMatchers("/genres/create", "/genres/edit/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/genres/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/genres/**").hasAuthority("ADMIN")
+                        .requestMatchers("/genres", "/genres/**").hasAnyAuthority("USER", "ADMIN")
                         .requestMatchers("/**").permitAll())
                 .formLogin(form -> form
                         .permitAll())
@@ -30,7 +38,6 @@ public class SecurityConfiguration {
         return http.build();
     }
 
-    // @SuppressWarnings("deprecation")
     @Bean
     DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
