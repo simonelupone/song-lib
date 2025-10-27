@@ -52,6 +52,11 @@
               <td>
                 <a th:href="@{/songs/edit/{id}(id=${song.id})}" class="font-bold hover:text-indigo-500">Edit</a>
               </td>
+              <td>
+                <form th:action="@{/songs/delete/{id}(id=${song.id})}" method="post" th:attr="data-title=${song.title}">
+                  <button type="submit" class="font-bold text-red-600 hover:text-red-800">Delete</button>
+                </form>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -61,5 +66,17 @@
     </main>
 
     <th:block th:replace="~{fragments/fragments :: footer}"></th:block>
+    <script>
+      const deleteForms = document.querySelectorAll('form[action*="delete"]');
+      deleteForms.forEach(form => {
+        form.addEventListener('submit', (e) => {
+          const title = form.dataset.title;
+          const message = `Are you sure you want to delete ---> ${title}?\n\nThis action cannot be undone.`;
+          if (!confirm(message)) {
+            e.preventDefault();
+          }
+        });
+      });
+    </script>
   </body>
 </html>

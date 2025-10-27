@@ -79,4 +79,10 @@ public class SongController {
 
         return "redirect:/songs";
     }
+
+    @PostMapping("/delete/{id}")
+    public String delete(@PathVariable Integer id) {
+        repository.deleteById(id);
+        return "redirect:/songs";
+    }
 }
