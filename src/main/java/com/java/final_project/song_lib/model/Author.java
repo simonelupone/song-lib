@@ -2,6 +2,8 @@ package com.java.final_project.song_lib.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,6 +25,7 @@ public class Author {
     @Size(min = 3, max = 100, message = "Name must be between 3 and 100 characters")
     private String name;
 
+    @JsonIgnore // con questo sistemo il lopp della serializzazione JSON che dava errore
     @ManyToMany(mappedBy = "authors")
     private List<Song> songs;
 

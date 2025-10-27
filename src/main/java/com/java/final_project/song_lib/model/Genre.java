@@ -2,6 +2,8 @@ package com.java.final_project.song_lib.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,6 +21,7 @@ public class Genre {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @JsonIgnore // con questo sistemo il lopp della serializzazione JSON che dava errore
     @OneToMany(mappedBy = "genre")
     private List<Song> songs;
 
