@@ -37,9 +37,9 @@
           >
         </div>
         <div class="flex gap-4 items-center">
-          <div>
-            Logged user: <span sec:authentication="name"></span>
-            Roles: <span sec:authentication="principal.authorities"></span>
+          <div class="flex gap-2">
+            Logged user: <span class="text-indigo-500" sec:authentication="name"></span>
+            Roles: <span class="text-indigo-500" sec:authentication="principal.authorities"></span>
           </div>
           <a href="/logout" class="p-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Logout</a>
         </div>
