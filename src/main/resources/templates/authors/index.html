@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Songs</title>
+    <title>Authors</title>
     <th:block th:replace="~{fragments/fragments :: style}"></th:block>
   </head>
   <body class="bg-gray-50 text-gray-800 dark:text-gray-200 dark:bg-gray-900">
@@ -12,28 +12,27 @@
     <main class="mx-auto site-max px-4 py-10">
       <div class="mb-8 flex items-center justify-center">
         <h1 class="text-4xl font-bold">
-           Songs
+           Authors
         </h1>
       </div>
 
       <div class="flex justify-between items-center mb-6">
-        <form th:action="@{/songs}" method="get">
-          <input th:value="${searchQuery}" name="title" class="my-10 me-2" type="text" placeholder="Search songs..." />
+        <form th:action="@{/authors}" method="get">
+          <input th:value="${searchQuery}" name="name" class="my-10 me-2" type="text" placeholder="Search authors..." />
           <button id="search-button" type="submit">Search</button>
         </form>
         <a
-          th:href="@{/songs/create}"
+          th:href="@{/authors/create}"
           class="p-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        >Create Song</a>
+        >Create Author</a>
       </div>
 
       <div class="w-full flex flex-col gap-4">
-        <table th:if="${songs.size() > 0}">
+        <table th:if="${authors.size() > 0}">
           <thead>
             <tr class="border-b border-gray-300 dark:border-gray-700">
-              <th class="text-left py-2 px-4">Title</th>
-              <th class="text-left py-2 px-4">Genre</th>
-              <th class="text-left py-2 px-4">Cover</th>
+              <th class="text-left py-2 px-4">Name</th>
+              <th class="text-left py-2 px-4">Songs</th>
               <th></th>
               <th></th>
               <th></th>
@@ -41,21 +40,20 @@
           </thead>
           <tbody>
             <tr
-              th:each="song : ${songs}"
-              th:object="${song}"
+              th:each="author : ${authors}"
+              th:object="${author}"
               class="border-b border-gray-200 dark:border-gray-800 hover:bg-gray-100 dark:hover:bg-gray-800"
             >
-              <td class="py-2 px-4" th:text="*{title}">Song Title</td>
-              <td class="py-2 px-4" th:text="*{genre.name}">Genre</td>
-              <td class="py-2 px-4" th:text="*{cover}">Cover</td>
+              <td class="py-2 px-4" th:text="*{name}">Author Name</td>
+              <td class="py-2 px-4" th:text="${author.songs.size()}">0</td>
               <td>
-                <a th:href="@{/songs/{id}(id=${song.id})}" class="font-bold hover:text-indigo-500">Show</a>
+                <a th:href="@{/authors/{id}(id=${author.id})}" class="font-bold hover:text-indigo-500">Show</a>
               </td>
               <td>
-                <a th:href="@{/songs/edit/{id}(id=${song.id})}" class="font-bold hover:text-indigo-500">Edit</a>
+                <a th:href="@{/authors/edit/{id}(id=${author.id})}" class="font-bold hover:text-indigo-500">Edit</a>
               </td>
               <td>
-                <form th:action="@{/songs/delete/{id}(id=${song.id})}" method="post" th:attr="data-title=${song.title}">
+                <form th:action="@{/authors/delete/{id}(id=${author.id})}" method="post" th:attr="data-name=${author.name}">
                   <button type="submit" class="font-bold text-red-600 hover:text-red-800">Delete</button>
                 </form>
               </td>
@@ -63,7 +61,7 @@
           </tbody>
         </table>
 
-        <p th:unless="${songs.size() > 0}">No songs found...</p>
+        <p th:unless="${authors.size() > 0}">No authors found...</p>
       </div>
     </main>
 
@@ -72,8 +70,8 @@
       const deleteForms = document.querySelectorAll('form[action*="delete"]');
       deleteForms.forEach(form => {
         form.addEventListener('submit', (e) => {
-          const title = form.dataset.title;
-          const message = `Are you sure you want to delete ---> ${title}?\n\nThis action cannot be undone.`;
+          const name = form.dataset.name;
+          const message = `Are you sure you want to delete ---> ${name} <--- ?\n\nThis action cannot be undone.`;
           if (!confirm(message)) {
             e.preventDefault();
           }

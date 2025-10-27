@@ -1,10 +1,14 @@
 package com.java.final_project.song_lib.model;
 
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
@@ -28,6 +32,10 @@ public class Song {
     @ManyToOne
     @JoinColumn(name = "genre_id", nullable = false)
     private Genre genre;
+
+    @ManyToMany
+    @JoinTable(name = "songs_authors", joinColumns = @JoinColumn(name = "song_id"), inverseJoinColumns = @JoinColumn(name = "author_id"))
+    private List<Author> authors;
 
     public Integer getId() {
         return id;
@@ -59,6 +67,14 @@ public class Song {
 
     public void setGenre(Genre genre) {
         this.genre = genre;
+    }
+
+    public List<Author> getAuthors() {
+        return authors;
+    }
+
+    public void setAuthors(List<Author> authors) {
+        this.authors = authors;
     }
 
     @Override
