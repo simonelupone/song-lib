@@ -15,30 +15,27 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.java.final_project.song_lib.model.Author;
 import com.java.final_project.song_lib.model.Song;
-import com.java.final_project.song_lib.repository.AuthorRepository;
-import com.java.final_project.song_lib.repository.SongRepository;
+import com.java.final_project.song_lib.service.AuthorService;
+import com.java.final_project.song_lib.service.SongService;
 import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/authors")
 public class AuthorController {
 
-    private final SongRepository songRepository;
+    @Autowired
+    private SongService songService;
 
     @Autowired
-    private AuthorRepository authorRepository;
-
-    AuthorController(SongRepository songRepository) {
-        this.songRepository = songRepository;
-    }
+    private AuthorService authorService;
 
     @GetMapping
     public String index(@RequestParam(name = "name", required = false) String name, Model model) {
         List<Author> authors;
         if (name != null) {
-            authors = authorRepository.findByNameContainingIgnoreCase(name.trim());
+            authors = authorService.findByName(name.trim());
         } else {
-            authors = authorRepository.findAll();
+            authors = authorService.findAll();
         }
         model.addAttribute("authors", authors);
         model.addAttribute("searchQuery", name);
@@ -47,7 +44,7 @@ public class AuthorController {
 
     @GetMapping("/{id}")
     public String show(@PathVariable Integer id, Model model) {
-        model.addAttribute("author", authorRepository.findById(id).get());
+        model.addAttribute("author", authorService.getByID(id));
         return "authors/show";
     }
 
@@ -63,13 +60,13 @@ public class AuthorController {
         if (bindingResult.hasErrors()) {
             return "authors/create";
         }
-        authorRepository.save(author);
+        authorService.create(author);
         return "redirect:/authors";
     }
 
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable Integer id, Model model) {
-        model.addAttribute("author", authorRepository.findById(id).get());
+        model.addAttribute("author", authorService.getByID(id));
         return "authors/edit";
     }
 
@@ -78,17 +75,17 @@ public class AuthorController {
         if (bindingResult.hasErrors()) {
             return "authors/edit";
         }
-        authorRepository.save(author);
+        authorService.update(author);
         return "redirect:/authors";
     }
 
     @PostMapping("/delete/{id}")
     public String delete(@PathVariable Integer id) {
-
-        for (Song song : authorRepository.findById(id).get().getSongs()) {
-            songRepository.delete(song);
+        // delete all songs linked to this author
+        for (Song song : authorService.getByID(id).getSongs()) {
+            songService.delete(song);
         }
-        authorRepository.deleteById(id);
+        authorService.deleteById(id);
         return "redirect:/authors";
     }
 

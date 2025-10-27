@@ -26,10 +26,24 @@
 
         <div class="my-4">
           <label for="genre" class="block text-sm font-medium">Genre</label>
-          <input th:field="*{genre}" th:errorclass="border-red-500" type="text" id="genre" name="genre" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-black" required />
+          <select id="genre" name="genreId" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-black" required>
+            <option value="" disabled selected>Select a genre</option>
+            <option th:each="genre : ${genres}" th:value="${genre.id}" th:text="${genre.name}"></option>
+          </select>
          <div th:if="${#fields.hasErrors('genre')}" class="mt-1 text-sm text-red-600">
             <ul>
                 <li th:each="error : ${#fields.errors('genre')}" th:text="${error}"></li>
+            </ul>
+        </div>
+
+        <div class="my-4">
+          <label for="authors" class="block text-sm font-medium">Authors</label>
+          <select id="authors" name="authorIds" multiple class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-black">
+            <option th:each="author : ${authors}" th:value="${author.id}" th:text="${author.name}"></option>
+          </select>
+         <div th:if="${#fields.hasErrors('authors')}" class="mt-1 text-sm text-red-600">
+            <ul>
+                <li th:each="error : ${#fields.errors('authors')}" th:text="${error}"></li>
             </ul>
         </div>
 

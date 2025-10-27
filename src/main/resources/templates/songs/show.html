@@ -21,6 +21,14 @@
         <div class="mb-4">
           <img th:src="@{${song.cover}}" alt="Cover" class="w-full max-w-sm rounded-lg" />
         </div>
+        <div>
+          <th:block th:if="${!#lists.isEmpty(song.authors)}">
+            <p>Authors:</p>
+            <ul>
+              <li th:each="author : ${song.authors}" th:text="${author.name}"></li>
+            </ul>
+          </th:block>
+        </div>
       </div>
     </main>
 

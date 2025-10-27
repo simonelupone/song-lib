@@ -22,7 +22,8 @@
           <h3 class="font-semibold mb-2 underline">Songs</h3>
           <ul>
             <li th:each="song : ${author.songs}">
-              <a th:href="@{/songs/{id}(id=${song.id})}" th:text="${song.title}"></a>
+              <!-- use Thymeleaf literal substitution to build the URL reliably -->
+              <a th:href="@{|/songs/${song.id}|}" th:text="${song.title}"></a>
             </li>
           </ul>
         </div>

@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.java.final_project.song_lib.model.Song;
-import com.java.final_project.song_lib.repository.SongRepository;
+import com.java.final_project.song_lib.service.AuthorService;
+import com.java.final_project.song_lib.service.GenreService;
+import com.java.final_project.song_lib.service.SongService;
 
 import jakarta.validation.Valid;
 
@@ -23,15 +25,21 @@ import jakarta.validation.Valid;
 public class SongController {
 
     @Autowired
-    private SongRepository songRepository;
+    private SongService songService;
+
+    @Autowired
+    private AuthorService authorService;
+
+    @Autowired
+    private GenreService genreService;
 
     @GetMapping
     public String index(@RequestParam(name = "title", required = false) String title, Model model) {
         List<Song> songs;
         if (title != null) {
-            songs = songRepository.findByTitleContainingIgnoreCase(title.trim());
+            songs = songService.findByTitle(title);
         } else {
-            songs = songRepository.findAll();
+            songs = songService.findAll();
         }
         model.addAttribute("songs", songs);
         model.addAttribute("searchQuery", title);
@@ -40,49 +48,79 @@ public class SongController {
 
     @GetMapping("/{id}")
     public String show(@PathVariable Integer id, Model model) {
-        Song song = songRepository.findById(id).get();
+        Song song = songService.getByID(id);
         model.addAttribute("song", song);
+        model.addAttribute("authors", song.getAuthors());
         return "songs/show";
     }
 
     @GetMapping("/create")
     public String create(Model model) {
         model.addAttribute("song", new Song());
+        model.addAttribute("authors", authorService.findAll());
+        model.addAttribute("genres", genreService.findAll());
         return "songs/create";
     }
 
     @PostMapping("/create")
-    public String store(@Valid @ModelAttribute Song song, BindingResult bindingResult, Model model) {
+    public String store(@Valid @ModelAttribute Song song, BindingResult bindingResult,
+            @RequestParam(name = "authorIds", required = false) List<Integer> authorIds,
+            @RequestParam(name = "genreId", required = false) Integer genreId,
+            Model model) {
         if (bindingResult.hasErrors()) {
+            model.addAttribute("authors", authorService.findAll());
+            model.addAttribute("genres", genreService.findAll());
             return "songs/create";
         }
 
-        songRepository.save(song);
+        if (genreId != null) {
+            song.setGenre(genreService.getByID(genreId));
+        }
+
+        if (authorIds != null && !authorIds.isEmpty()) {
+            song.setAuthors(authorService.findAllById(authorIds));
+        }
+
+        songService.create(song);
 
         return "redirect:/songs";
     }
 
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable Integer id, Model model) {
-        model.addAttribute("song", songRepository.findById(id).get());
+        model.addAttribute("song", songService.getByID(id));
+        model.addAttribute("authors", authorService.findAll());
+        model.addAttribute("genres", genreService.findAll());
         return "songs/edit";
     }
 
     @PostMapping("/edit/{id}")
     public String update(@Valid @ModelAttribute Song song, BindingResult bindingResult,
+            @RequestParam(name = "authorIds", required = false) List<Integer> authorIds,
+            @RequestParam(name = "genreId", required = false) Integer genreId,
             Model model) {
         if (bindingResult.hasErrors()) {
+            model.addAttribute("authors", authorService.findAll());
+            model.addAttribute("genres", genreService.findAll());
             return "songs/edit";
         }
 
-        songRepository.save(song);
+        if (genreId != null) {
+            song.setGenre(genreService.getByID(genreId));
+        }
+
+        if (authorIds != null && !authorIds.isEmpty()) {
+            song.setAuthors(authorService.findAllById(authorIds));
+        }
+
+        songService.update(song);
 
         return "redirect:/songs";
     }
 
     @PostMapping("/delete/{id}")
     public String delete(@PathVariable Integer id) {
-        songRepository.deleteById(id);
+        songService.deleteById(id);
         return "redirect:/songs";
     }
 }

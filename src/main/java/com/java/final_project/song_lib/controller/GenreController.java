@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.java.final_project.song_lib.model.Genre;
 import com.java.final_project.song_lib.model.Song;
-import com.java.final_project.song_lib.repository.GenreRepository;
-import com.java.final_project.song_lib.repository.SongRepository;
+import com.java.final_project.song_lib.service.GenreService;
+import com.java.final_project.song_lib.service.SongService;
 
 import jakarta.validation.Valid;
 
@@ -25,18 +25,18 @@ import jakarta.validation.Valid;
 public class GenreController {
 
     @Autowired
-    private GenreRepository genreRepository;
+    private GenreService genreService;
 
     @Autowired
-    private SongRepository songRepository;
+    private SongService songService;
 
     @GetMapping
     public String index(@RequestParam(name = "name", required = false) String name, Model model) {
         List<Genre> genres;
         if (name != null) {
-            genres = genreRepository.findByNameContainingIgnoreCase(name.trim());
+            genres = genreService.findByName(name.trim());
         } else {
-            genres = genreRepository.findAll();
+            genres = genreService.findAll();
         }
         model.addAttribute("genres", genres);
         model.addAttribute("searchQuery", name);
@@ -45,7 +45,7 @@ public class GenreController {
 
     @GetMapping("/{id}")
     public String show(@PathVariable Integer id, Model model) {
-        Genre genre = genreRepository.findById(id).get();
+        Genre genre = genreService.getByID(id);
         model.addAttribute("genre", genre);
         return "genres/show";
     }
@@ -62,14 +62,14 @@ public class GenreController {
             return "genres/create";
         }
 
-        genreRepository.save(genre);
+        genreService.create(genre);
 
         return "redirect:/genres";
     }
 
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable Integer id, Model model) {
-        model.addAttribute("genre", genreRepository.findById(id).get());
+        model.addAttribute("genre", genreService.getByID(id));
         return "genres/edit";
     }
 
@@ -80,21 +80,20 @@ public class GenreController {
             return "genres/edit";
         }
 
-        genreRepository.save(genre);
+        genreService.update(genre);
 
         return "redirect:/genres";
     }
 
     @PostMapping("/delete/{id}")
     public String delete(@PathVariable Integer id) {
-
-        Genre genre = genreRepository.findById(id).get();
+        Genre genre = genreService.getByID(id);
 
         for (Song song : genre.getSongs()) {
-            songRepository.delete(song);
+            songService.delete(song);
         }
 
-        genreRepository.deleteById(id);
+        genreService.deleteById(id);
         return "redirect:/genres";
     }
 }
