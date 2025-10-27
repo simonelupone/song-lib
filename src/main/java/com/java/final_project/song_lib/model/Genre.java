@@ -1,11 +1,15 @@
 package com.java.final_project.song_lib.model;
 
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "genres")
@@ -15,7 +19,11 @@ public class Genre {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @OneToMany(mappedBy = "genre")
+    private List<Song> songs;
+
     @NotBlank
+    @Size(min = 3, max = 50, message = "Genre name must be between 3 and 50 characters")
     private String name;
 
     public Integer getId() {
@@ -24,6 +32,14 @@ public class Genre {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public List<Song> getSongs() {
+        return songs;
+    }
+
+    public void setSongs(List<Song> songs) {
+        this.songs = songs;
     }
 
     public String getName() {
